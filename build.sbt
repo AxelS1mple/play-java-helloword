@@ -3,9 +3,17 @@ organization := "com.example"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava)
+lazy val root = (project in file("."))
+  .enablePlugins(PlayJava, JavaAppPackaging) // Se agregó JavaAppPackaging para empaquetar el proyecto
+  .settings(
+    scalaVersion := "2.13.16",
 
-scalaVersion := "2.13.16"
+    // Configuración del puerto dinámico para Heroku
+    javaOptions ++= Seq(
+      "-Dhttp.port=" + sys.props.getOrElse("http.port", "8080"), // Puerto dinámico
+      "-Dplay.http.secret.key=" + sys.props.getOrElse("SECRET_KEY", "changeme") // Clave secreta de Play
+    )
+  )
 
 // Define la versión de Play Framework que usará el proyecto
 val playVersion = "2.8.20"
